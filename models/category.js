@@ -1,5 +1,4 @@
-import mongoose  from "mongoose";
-
+import mongoose from "mongoose";
 
 const category = new mongoose.Schema({
   name: {
@@ -9,7 +8,6 @@ const category = new mongoose.Schema({
     trim: true,
     maxlength: [50, 'Name cannot be more than 50 characters']
   },
-  
   createdAt: {
     type: Date,
     default: Date.now
@@ -27,15 +25,10 @@ const category = new mongoose.Schema({
   toObject: { virtuals: true }
 });
 
-
-
-
-
 category.pre('remove', async function(next) {
   await mongoose.model('Product').deleteMany({ category: this._id });
   next();
 });
-
 
 category.virtual('products', {
   ref: 'Product',
@@ -44,5 +37,6 @@ category.virtual('products', {
   justOne: false
 });
 
+const Category = mongoose.model('Category', category);
 
-export default category;
+export default Category;

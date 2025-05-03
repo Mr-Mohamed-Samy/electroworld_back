@@ -29,16 +29,18 @@ export const createProduct = async (req, res) => {
 
 export const getAllProducts = async (req, res) => {
   try {
-   
+    // Pagination parameters
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
+    // Fetch products with pagination and populate category name
     const products = await Product.find()
       .skip(skip)
       .limit(limit)
-      .populate('category', 'name');
+      .populate('category', 'name'); // Populates category's name field only
 
+    // Get the total number of products for pagination
     const total = await Product.countDocuments();
 
     res.status(200).json({
@@ -47,7 +49,7 @@ export const getAllProducts = async (req, res) => {
         page,
         limit,
         total,
-        pages: Math.ceil(total / limit)
+        pages: Math.ceil(total / limit) // Calculate total pages
       }
     });
   } catch (err) {
@@ -57,7 +59,6 @@ export const getAllProducts = async (req, res) => {
     });
   }
 };
-
 export const getProductById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id)
